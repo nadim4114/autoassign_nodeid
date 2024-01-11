@@ -1,26 +1,43 @@
-
-
-
-
-
 import wx
 import os
 
+from wx import Panel
 
-class MainWindow(wx.Frame):
+import Actions
+from Actions import *
+
+
+class MyFrame(wx.Frame):
+    def __init__(self, parent):
+        wx.Frame.__init__(self)
+
+        # Attributes
+        self.Panel1 = ActionPanel2(self)
+        self.Panel2 = MenuPanel(self)
+
+
+class MenuPanel(wx.Panel):
     def __init__(self, parent, title):
-        wx.Frame.__init__(self, parent, title=title, size=(1024, 600))
-        self.control = wx.TextCtrl(self, style=wx.TE_MULTILINE)
+        wx.Panel.__init__(self, parent, title=title, size=(1024, 600))
+        # self.control = wx.TextCtrl(self, style=wx.TE_MULTILINE)
 
-        self.CreateStatusBar()  # Create a status bar in the bottom of the window
+        #self.CreateStatusBar()  # Create a status bar in the bottom of the window
+
+        self.InitUI()
+
+    def InitUI(self):
+        # nb = wx.Notebook(self)
+        myp = ActionPanel2(self)
+        self.Centre()
+        #        self.Show(True)
 
         # setting up file menu
         filemenu = wx.Menu()
 
         # wx.ID_ABOUT and wx.ID_EXIT are standard IDs provided by wxWidgets.
-        menuopen = filemenu.Append(wx.ID_OPEN , item="&Open", helpString="Open a File")
+        menuopen = filemenu.Append(wx.ID_OPEN, item="&Open", helpString="Open a File")
         filemenu.AppendSeparator()
-        menusave = filemenu.Append(wx.ID_SAVE , item="&Save", helpString="Save a File")
+        menusave = filemenu.Append(wx.ID_SAVE, item="&Save", helpString="Save a File")
         filemenu.AppendSeparator()
         menuabout = filemenu.Append(wx.ID_ABOUT, item="&About", helpString="Know about this program")
         filemenu.AppendSeparator()
@@ -33,7 +50,7 @@ class MainWindow(wx.Frame):
 
         menubar = wx.MenuBar()
         menubar.Append(filemenu, "&File")  # Adding the "filemenu" to the MenuBar
-        menubar.Append(modulemenu, "&Modules") # Adding the "modulemenu" to the MenuBar
+        menubar.Append(modulemenu, "&Modules")  # Adding the "modulemenu" to the MenuBar
         self.SetMenuBar(menubar)  # Adding the MenuBar to the Frame content.
 
         self.Bind(wx.EVT_MENU, self.OnOpen, menuopen)
@@ -41,27 +58,9 @@ class MainWindow(wx.Frame):
         self.Bind(wx.EVT_MENU, self.OnExit, menuexit)
         self.Bind(wx.EVT_MENU, self.OnAbout, menuabout)
 
-
-        self.sizer2 = wx.BoxSizer(wx.HORIZONTAL)
-        self.buttons = []
-        for i in range(0, 6):
-            self.buttons.append(wx.Button(self, -1, "Button &"+str(i)))
-            self.sizer2.Add(self.buttons[i], 1, wx.EXPAND)
-
-        # Use some sizers to see layout options
-        self.sizer = wx.BoxSizer(wx.VERTICAL)
-        self.sizer.Add(self.control, 1, wx.EXPAND)
-        self.sizer.Add(self.sizer2, 0, wx.EXPAND)
-
-        #Layout sizers
-        self.SetSizer(self.sizer)
-        self.SetAutoLayout(1)
-        self.sizer.Fit(self)
         self.Show()
 
-        self.Show()
-
-    def OnOpen(self,e):
+    def OnOpen(self, e):
         # Todo
         """ Open a file"""
         dlg = wx.FileDialog(self, "Choose a file", "", "*.*", wx.FD_OPEN)
@@ -73,18 +72,28 @@ class MainWindow(wx.Frame):
             f.close()
         dlg.Destroy()
 
-
-    def OnSave(self,e):
+    def OnSave(self, e):
         # Todo
         pass
 
-
-
-
-    def OnExit(self,e):
+    def OnExit(self, e):
         self.Close(True)
 
-    def OnAbout(self,e):
+    def OnAbout(self, e):
         dlg = wx.MessageDialog(self, "Modules Configurator", "About", wx.OK)
         dlg.ShowModal()
         dlg.Destroy()
+
+
+class ActionPanel2(wx.Panel):
+    def __init__(self, parent):
+        super(ActionPanel2, self).__init__(parent)
+        lblList = ['Value X', 'Value Y', 'Value Z']
+        rbox = wx.RadioBox(self, label='RadioBox', pos=(25, 10), choices=lblList,
+                           majorDimension=1, style=wx.RA_SPECIFY_ROWS)
+
+
+app = wx.App(False)
+frame = MyFrame(None, 'My OLd')
+frame.Show()
+app.MainLoop()

@@ -1,45 +1,33 @@
 import wx
 
 
-class Form(wx.Panel):
+class ActionPanel(wx.Panel):
     ''' The Form class is a wx.Panel that creates a bunch of controls
         and handlers for callbacks. Doing the layout of the controls is
         the responsibility of subclasses (by means of the doLayout()
         method). '''
 
     def __init__(self, *args, **kwargs):
-        super(Form, self).__init__(*args, **kwargs)
-        self.referrers = ['friends', 'advertising', 'websearch', 'yellowpages']
-        self.colors = ['blue', 'red', 'yellow', 'orange', 'green', 'purple',
-                       'navy blue', 'black', 'gray']
+        super(ActionPanel, self).__init__(*args, **kwargs)
+        self.referrers = ['16 Digital Input', '16 Digital Output', '8 TC', 'Coupler']
         self.createControls()
         self.bindEvents()
         self.doLayout()
 
     def createControls(self):
         self.logger = wx.TextCtrl(self, style=wx.TE_MULTILINE | wx.TE_READONLY)
-        self.saveButton = wx.Button(self, label="Save")
-        self.nameLabel = wx.StaticText(self, label="Your name:")
-        self.nameTextCtrl = wx.TextCtrl(self, value="Enter here your name")
-        self.referrerLabel = wx.StaticText(self,
-                                           label="How did you hear from us?")
+        self.saveButton = wx.Button(self, label=" Add ")
         self.referrerComboBox = wx.ComboBox(self, choices=self.referrers,
                                             style=wx.CB_DROPDOWN)
         self.insuranceCheckBox = wx.CheckBox(self,
-                                             label="Do you want Insured Shipment?")
-        self.colorRadioBox = wx.RadioBox(self,
-                                         label="What color would you like?",
-                                         choices=self.colors, majorDimension=3, style=wx.RA_SPECIFY_COLS)
+                                             label="Additional options")
 
     def bindEvents(self):
         for control, event, handler in \
                 [(self.saveButton, wx.EVT_BUTTON, self.onSave),
-                 (self.nameTextCtrl, wx.EVT_TEXT, self.onNameEntered),
-                 (self.nameTextCtrl, wx.EVT_CHAR, self.onNameChanged),
                  (self.referrerComboBox, wx.EVT_COMBOBOX, self.onReferrerEntered),
                  (self.referrerComboBox, wx.EVT_TEXT, self.onReferrerEntered),
-                 (self.insuranceCheckBox, wx.EVT_CHECKBOX, self.onInsuranceChanged),
-                 (self.colorRadioBox, wx.EVT_RADIOBOX, self.onColorchanged)]:
+                 (self.insuranceCheckBox, wx.EVT_CHECKBOX, self.onInsuranceChanged),]:
             control.Bind(event, handler)
 
     def doLayout(self):
@@ -54,7 +42,7 @@ class Form(wx.Panel):
         self.__log('User wants color: %s' % self.colors[event.GetInt()])
 
     def onReferrerEntered(self, event):
-        self.__log('User entered referrer: %s' % event.GetString())
+        self.__log('User Added: %s' % event.GetString())
 
     def onSave(self, event):
         self.__log('User clicked on button with id %d' % event.GetId())
@@ -67,7 +55,7 @@ class Form(wx.Panel):
         event.Skip()
 
     def onInsuranceChanged(self, event):
-        self.__log('User wants insurance: %s' % event.IsChecked())
+        self.__log('Additional options: %s' % event.IsChecked())
 
     # Helper method(s):
 
@@ -77,22 +65,18 @@ class Form(wx.Panel):
         self.logger.AppendText('%s\n' % message)
 
 
-class FormWithAbsolutePositioning(Form):
+class FormWithAbsolutePositioning(ActionPanel):
     def doLayout(self):
         ''' Layout the controls by means of absolute positioning. '''
         for control, x, y, width, height in \
-                [(self.logger, 300, 20, 200, 300),
-                 (self.nameLabel, 20, 60, -1, -1),
-                 (self.nameTextCtrl, 150, 60, 150, -1),
-                 (self.referrerLabel, 20, 90, -1, -1),
-                 (self.referrerComboBox, 150, 90, 95, -1),
-                 (self.insuranceCheckBox, 20, 180, -1, -1),
-                 (self.colorRadioBox, 20, 210, -1, -1),
-                 (self.saveButton, 200, 300, -1, -1)]:
+                [(self.logger, 1000, 400, 200, 200),
+                 (self.saveButton, 1000, 200, -1, -1),
+                 (self.referrerComboBox, 1000, 90, 95, -1),
+                 (self.insuranceCheckBox, 1000, 180, -1, -1),]:
             control.SetDimensions(x=x, y=y, width=width, height=height)
 
 
-class FormWithSizer(Form):
+class FormWithSizer(ActionPanel):
     def doLayout(self):
         ''' Layout the controls by means of sizers. '''
 
@@ -109,16 +93,10 @@ class FormWithSizer(Form):
 
         # Add the controls to the sizers:
         for control, options in \
-                [(self.nameLabel, noOptions),
-                 (self.nameTextCtrl, expandOption),
-                 (self.referrerLabel, noOptions),
+                 [(self.saveButton, dict(flag=wx.ALIGN_CENTER)),
                  (self.referrerComboBox, expandOption),
                  emptySpace,
-                 (self.insuranceCheckBox, noOptions),
-                 emptySpace,
-                 (self.colorRadioBox, noOptions),
-                 emptySpace,
-                 (self.saveButton, dict(flag=wx.ALIGN_CENTER))]:
+                 (self.insuranceCheckBox, noOptions),]:
             gridSizer.Add(control, **options)
 
         for control, options in \
@@ -135,18 +113,18 @@ class FrameWithForms(wx.Frame):
         super(FrameWithForms, self).__init__(*args, **kwargs)
         notebook = wx.Notebook(self)
         form1 = FormWithAbsolutePositioning(notebook)
-        form2 = FormWithSizer(notebook)
+        #form2 = FormWithSizer(notebook)
         notebook.AddPage(form1, 'Absolute Positioning')
-        notebook.AddPage(form2, 'Sizers')
+        #notebook.AddPage(form2, 'Configurator')
         # We just set the frame to the right size manually. This is feasible
         # for the frame since the frame contains just one component. If the
         # frame had contained more than one component, we would use sizers
         # of course, as demonstrated in the FormWithSizer class above.
         self.SetClientSize(notebook.GetBestSize())
+        self.Show()
 
 
 if __name__ == '__main__':
     app = wx.App(0)
-    frame = FrameWithForms(None, title='Demo with Notebook')
-    frame.Show()
+    frame = FrameWithForms(None, title='Configurator')
     app.MainLoop()

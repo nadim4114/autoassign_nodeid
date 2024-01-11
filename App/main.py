@@ -1,6 +1,11 @@
 import wx
+from Actions import *
 
-from Menu import MainWindow
+
+
+
+from FileMenu import *
+
 app = wx.App(False)
-frame = MainWindow(None, title='Demo with Notebook')
+frame = MainWindow(None, title='Module Config')
 app.MainLoop()
