@@ -73,7 +73,7 @@ def GetMondrianIcon():
 class PyAUIFrame(wx.Frame):
 
     def __init__(self, parent, id=-1, title="", pos=wx.DefaultPosition,
-                 size=(1024,800), style=wx.DEFAULT_FRAME_STYLE |
+                 size=(1200,900), style=wx.DEFAULT_FRAME_STYLE |
                                             wx.SUNKEN_BORDER |
                                             wx.CLIP_CHILDREN):
 
@@ -97,18 +97,7 @@ class PyAUIFrame(wx.Frame):
 
         #
         view_menu = wx.Menu()
-        # view_menu.Append(ID_CreateText, "Create Text Control")
-        # view_menu.Append(ID_CreateHTML, "Create HTML Control")
-        # view_menu.Append(ID_CreateTree, "Create Tree")
-        # view_menu.Append(ID_CreateGrid, "Create Grid")
-        view_menu.Append(ID_CreateSizeReport, "Show Action panel")
-        # view_menu.AppendSeparator()
-        view_menu.Append(ID_GridContent, "Show Grid")
-        # view_menu.Append(ID_TextContent, "Use a Text Control for the Content Pane")
-        # view_menu.Append(ID_HTMLContent, "Use an HTML Control for the Content Pane")
-        # view_menu.Append(ID_TreeContent, "Use a Tree Control for the Content Pane")
-        # view_menu.Append(ID_SizeReportContent, "Show side panel")
-        #
+        view_menu.Append(ID_CreateText, "Temporary Notepad")
 
         options_menu = wx.Menu()
         options_menu.AppendRadioItem(ID_TransparentHint, "Transparent Hint")
@@ -130,11 +119,8 @@ class PyAUIFrame(wx.Frame):
 
         self._perspectives_menu = wx.Menu()
         self._perspectives_menu.Append(ID_CreatePerspective, "Create Perspective")
-        #self._perspectives_menu.Append(ID_CopyPerspective, "Copy Perspective Data To Clipboard")
         self._perspectives_menu.AppendSeparator()
         self._perspectives_menu.Append(ID_FirstPerspective[0], "Default Startup")
-        #self._perspectives_menu.Append(ID_FirstPerspective[1], "All Panes")
-        #self._perspectives_menu.Append(ID_FirstPerspective[2], "Vertical Toolbar")
 
         help_menu = wx.Menu()
         help_menu.Append(ID_About, "About...")
@@ -158,98 +144,59 @@ class PyAUIFrame(wx.Frame):
         self.SetMinSize(wx.Size(400, 300))
 
         # create some toolbars
-        tb1 = wx.ToolBar(self, -1, wx.DefaultPosition, wx.DefaultSize,
-                         wx.TB_FLAT | wx.TB_NODIVIDER)
-        tb1.SetToolBitmapSize(wx.Size(48,48))
-        tb1.AddTool(101, "Test", wx.ArtProvider.GetBitmapBundle(wx.ART_ERROR))
-        tb1.AddSeparator()
-        tb1.AddTool(102, "Test", wx.ArtProvider.GetBitmapBundle(wx.ART_QUESTION))
-        tb1.AddTool(103, "Test", wx.ArtProvider.GetBitmapBundle(wx.ART_INFORMATION))
-        tb1.AddTool(103, "Test", wx.ArtProvider.GetBitmapBundle(wx.ART_WARNING))
-        tb1.AddTool(103, "Test", wx.ArtProvider.GetBitmapBundle(wx.ART_MISSING_IMAGE))
-        tb1.Realize()
 
         tb2 = wx.ToolBar(self, -1, wx.DefaultPosition, wx.DefaultSize,
-                         wx.TB_FLAT | wx.TB_NODIVIDER)
+                         wx.TB_FLAT | wx.TB_NODIVIDER | wx.TB_HORZ_TEXT)
         tb2.SetToolBitmapSize(wx.Size(16,16))
-        tb2_bmp1 = wx.ArtProvider.GetBitmapBundle(wx.ART_QUESTION, wx.ART_OTHER, wx.Size(16, 16))
-        tb2.AddTool(101, "Test", tb2_bmp1)
-        tb2.AddTool(101, "Test", tb2_bmp1)
-        tb2.AddTool(101, "Test", tb2_bmp1)
-        tb2.AddTool(101, "Test", tb2_bmp1)
-        tb2.AddSeparator()
-        tb2.AddTool(101, "Test", tb2_bmp1)
-        tb2.AddTool(101, "Test", tb2_bmp1)
-        tb2.AddSeparator()
-        tb2.AddTool(101, "Test", tb2_bmp1)
-        tb2.AddTool(101, "Test", tb2_bmp1)
-        tb2.AddTool(101, "Test", tb2_bmp1)
-        tb2.AddTool(101, "Test", tb2_bmp1)
+        tb2_bmp1 = wx.ArtProvider.GetBitmapBundle(wx.ART_PLUS, wx.ART_OTHER, wx.Size(16, 16))
+        tb2_bmp2 = wx.ArtProvider.GetBitmapBundle(wx.ART_MINUS, wx.ART_OTHER, wx.Size(16, 16))
+        tb2.AddTool(101, "Add Module", tb2_bmp1)
+        tb2.AddTool(101, "Remove Module", tb2_bmp2)
         tb2.Realize()
 
         tb3 = wx.ToolBar(self, -1, wx.DefaultPosition, wx.DefaultSize,
-                         wx.TB_FLAT | wx.TB_NODIVIDER)
+                         wx.TB_FLAT | wx.TB_NODIVIDER | wx.TB_HORZ_TEXT)
         tb3.SetToolBitmapSize(wx.Size(16,16))
-        tb3_bmp1 = wx.ArtProvider.GetBitmapBundle(wx.ART_FOLDER, wx.ART_OTHER, wx.Size(16, 16))
-        tb3.AddTool(101, "Test", tb3_bmp1)
-        tb3.AddTool(101, "Test", tb3_bmp1)
-        tb3.AddTool(101, "Test", tb3_bmp1)
-        tb3.AddTool(101, "Test", tb3_bmp1)
-        tb3.AddSeparator()
-        tb3.AddTool(101, "Test", tb3_bmp1)
-        tb3.AddTool(101, "Test", tb3_bmp1)
+        tb3_bmp1 = wx.ArtProvider.GetBitmapBundle(wx.ART_FILE_OPEN, wx.ART_OTHER, wx.Size(16, 16))
+        tb3_bmp2 = wx.ArtProvider.GetBitmapBundle(wx.ART_FILE_SAVE, wx.ART_OTHER, wx.Size(16, 16))
+        tb3.AddTool(101, "Open", tb3_bmp1)
+        tb3.AddTool(101, "Save", tb3_bmp2)
         tb3.Realize()
 
         tb4 = wx.ToolBar(self, -1, wx.DefaultPosition, wx.DefaultSize,
                          wx.TB_FLAT | wx.TB_NODIVIDER | wx.TB_HORZ_TEXT)
         tb4.SetToolBitmapSize(wx.Size(16,16))
-        tb4_bmp1 = wx.ArtProvider.GetBitmapBundle(wx.ART_NORMAL_FILE, wx.ART_OTHER, wx.Size(16, 16))
-        tb4.AddTool(101, "Item 1", tb4_bmp1)
-        tb4.AddTool(101, "Item 2", tb4_bmp1)
-        tb4.AddTool(101, "Item 3", tb4_bmp1)
-        tb4.AddTool(101, "Item 4", tb4_bmp1)
+        tb4_bmp1 = wx.ArtProvider.GetBitmapBundle(wx.ART_GO_DOWN, wx.ART_OTHER, wx.Size(16, 16))
+        tb4_bmp2 = wx.ArtProvider.GetBitmapBundle(wx.ART_GO_UP, wx.ART_OTHER, wx.Size(16, 16))
+        tb4.AddTool(101, "Download", tb4_bmp1)
+        tb4.AddTool(101, "Upload", tb4_bmp2)
         tb4.AddSeparator()
-        tb4.AddTool(101, "Item 5", tb4_bmp1)
-        tb4.AddTool(101, "Item 6", tb4_bmp1)
-        tb4.AddTool(101, "Item 7", tb4_bmp1)
-        tb4.AddTool(101, "Item 8", tb4_bmp1)
         tb4.Realize()
 
-        tb5 = wx.ToolBar(self, -1, wx.DefaultPosition, wx.DefaultSize,
-                         wx.TB_FLAT | wx.TB_NODIVIDER | wx.TB_VERTICAL)
-        tb5.SetToolBitmapSize(wx.Size(48, 48))
-        tb5.AddTool(101, "Test", wx.ArtProvider.GetBitmapBundle(wx.ART_ERROR))
-        tb5.AddSeparator()
-        tb5.AddTool(102, "Test", wx.ArtProvider.GetBitmapBundle(wx.ART_QUESTION))
-        tb5.AddTool(103, "Test", wx.ArtProvider.GetBitmapBundle(wx.ART_INFORMATION))
-        tb5.AddTool(103, "Test", wx.ArtProvider.GetBitmapBundle(wx.ART_WARNING))
-        tb5.AddTool(103, "Test", wx.ArtProvider.GetBitmapBundle(wx.ART_MISSING_IMAGE))
-        tb5.Realize()
-
         # add a bunch of panes
-        self._mgr.AddPane(self.CreateSizeReportCtrl(), aui.AuiPaneInfo().
-                          Name("test1").Caption("Pane Caption").Top().
-                          CloseButton(True).MaximizeButton(True))
-
-        self._mgr.AddPane(self.CreateSizeReportCtrl(), aui.AuiPaneInfo().
-                          Name("test2").Caption("Client Size Reporter").
-                          Bottom().Position(1).CloseButton(True).MaximizeButton(True))
-
-        self._mgr.AddPane(self.CreateSizeReportCtrl(), aui.AuiPaneInfo().
-                          Name("test3").Caption("Client Size Reporter").
-                          Bottom().CloseButton(True).MaximizeButton(True))
-
-        self._mgr.AddPane(self.CreateSizeReportCtrl(), aui.AuiPaneInfo().
-                          Name("test4").Caption("Pane Caption").
-                          Left().CloseButton(True).MaximizeButton(True))
-
-        self._mgr.AddPane(self.CreateSizeReportCtrl(), aui.AuiPaneInfo().
-                          Name("test5").Caption("Pane Caption").
-                          Right().CloseButton(True).MaximizeButton(True))
-
-        self._mgr.AddPane(self.CreateSizeReportCtrl(), aui.AuiPaneInfo().
-                          Name("test6").Caption("Client Size Reporter").
-                          Right().Row(1).CloseButton(True).MaximizeButton(True))
+        # self._mgr.AddPane(self.CreateSizeReportCtrl(), aui.AuiPaneInfo().
+        #                   Name("test1").Caption("Pane Caption").Top().
+        #                   CloseButton(True).MaximizeButton(True))
+        #
+        # self._mgr.AddPane(self.CreateSizeReportCtrl(), aui.AuiPaneInfo().
+        #                   Name("test2").Caption("Client Size Reporter").
+        #                   Bottom().Position(1).CloseButton(True).MaximizeButton(True))
+        #
+        # self._mgr.AddPane(self.CreateSizeReportCtrl(), aui.AuiPaneInfo().
+        #                   Name("test3").Caption("Client Size Reporter").
+        #                   Bottom().CloseButton(True).MaximizeButton(True))
+        #
+        # self._mgr.AddPane(self.CreateSizeReportCtrl(), aui.AuiPaneInfo().
+        #                   Name("test4").Caption("Pane Caption").
+        #                   Left().CloseButton(True).MaximizeButton(True))
+        #
+        # self._mgr.AddPane(self.CreateSizeReportCtrl(), aui.AuiPaneInfo().
+        #                   Name("test5").Caption("Pane Caption").
+        #                   Right().CloseButton(True).MaximizeButton(True))
+        #
+        # self._mgr.AddPane(self.CreateSizeReportCtrl(), aui.AuiPaneInfo().
+        #                   Name("test6").Caption("Client Size Reporter").
+        #                   Right().Row(1).CloseButton(True).MaximizeButton(True))
 
         self._mgr.AddPane(self.CreateSizeReportCtrl(), aui.AuiPaneInfo().
                           Name("test7").Caption("Action bar").
@@ -273,33 +220,28 @@ class PyAUIFrame(wx.Frame):
                           Name("test11").Caption("Fixed Pane").
                           Bottom().Layer(1).Position(2).Fixed().CloseButton(True).MaximizeButton(True))
 
-        self._mgr.AddPane(SettingsPanel(self, self), aui.AuiPaneInfo().
-                          Name("settings").Caption("Dock Manager Settings").
-                          Dockable(False).Float().Hide().CloseButton(True).MaximizeButton(True))
+        # self._mgr.AddPane(SettingsPanel(self, self), aui.AuiPaneInfo().
+        #                   Name("settings").Caption("Dock Manager Settings").
+        #                   Dockable(False).Float().Hide().CloseButton(True).MaximizeButton(True))
 
         # create some center panes
 
-        self._mgr.AddPane(self.CreateGrid(), aui.AuiPaneInfo().Name("grid_content").
-                          CenterPane().Hide())
+        # self._mgr.AddPane(self.CreateGrid(), aui.AuiPaneInfo().Name("Module Config Grid").
+        #                   CenterPane().Hide())
 
-        self._mgr.AddPane(self.CreateTreeCtrl(), aui.AuiPaneInfo().Name("tree_content").
-                          CenterPane().Hide())
+        # self._mgr.AddPane(self.CreateTreeCtrl(), aui.AuiPaneInfo().Name("Module Tree").
+        #                   CenterPane().Hide())
 
-        self._mgr.AddPane(self.CreateSizeReportCtrl(), aui.AuiPaneInfo().Name("sizereport_content").
-                          CenterPane().Hide())
+        # self._mgr.AddPane(self.CreateSizeReportCtrl(), aui.AuiPaneInfo().Name("Action").
+        #                   CenterPane().Hide())
 
-        self._mgr.AddPane(self.CreateTextCtrl(), aui.AuiPaneInfo().Name("text_content").
-                          CenterPane().Hide())
+        # self._mgr.AddPane(self.CreateTextCtrl(), aui.AuiPaneInfo().Name("Notes").
+        #                   CenterPane().Hide())
 
-        self._mgr.AddPane(self.CreateHTMLCtrl(), aui.AuiPaneInfo().Name("html_content").
-                          CenterPane())
+        # self._mgr.AddPane(self.CreateHTMLCtrl(), aui.AuiPaneInfo().Name("html_content").
+        #                   CenterPane())
 
         # add the toolbars to the manager
-
-        self._mgr.AddPane(tb1, aui.AuiPaneInfo().
-                          Name("tb1").Caption("Big Toolbar").
-                          ToolbarPane().Top().
-                          LeftDockable(False).RightDockable(False))
 
         self._mgr.AddPane(tb2, aui.AuiPaneInfo().
                           Name("tb2").Caption("Toolbar 2").
@@ -312,14 +254,10 @@ class PyAUIFrame(wx.Frame):
                           LeftDockable(False).RightDockable(False))
 
         self._mgr.AddPane(tb4, aui.AuiPaneInfo().
-                          Name("tb4").Caption("Sample Bookmark Toolbar").
+                          Name("tb4").Caption("Toolbar 4").
                           ToolbarPane().Top().Row(2).
                           LeftDockable(False).RightDockable(False))
 
-        self._mgr.AddPane(tb5, aui.AuiPaneInfo().
-                          Name("tbvert").Caption("Sample Vertical Toolbar").
-                          ToolbarPane().Left().GripperTop().
-                          TopDockable(False).BottomDockable(False))
 
         self._mgr.AddPane(wx.Button(self, -1, "Test Button"),
                           aui.AuiPaneInfo().Name("tb5").
@@ -384,7 +322,7 @@ class PyAUIFrame(wx.Frame):
         self.Bind(wx.EVT_MENU, self.OnCreateTree, id=ID_CreateTree)
         self.Bind(wx.EVT_MENU, self.OnCreateGrid, id=ID_CreateGrid)
         self.Bind(wx.EVT_MENU, self.OnCreateText, id=ID_CreateText)
-        self.Bind(wx.EVT_MENU, self.OnCreateHTML, id=ID_CreateHTML)
+        # self.Bind(wx.EVT_MENU, self.OnCreateHTML, id=ID_CreateHTML)
         self.Bind(wx.EVT_MENU, self.OnCreateSizeReport, id=ID_CreateSizeReport)
         self.Bind(wx.EVT_MENU, self.OnCreatePerspective, id=ID_CreatePerspective)
         self.Bind(wx.EVT_MENU, self.OnCopyPerspective, id=ID_CopyPerspective)
@@ -638,12 +576,12 @@ class PyAUIFrame(wx.Frame):
         self._mgr.Update()
 
 
-    def OnCreateHTML(self, event):
-        self._mgr.AddPane(self.CreateHTMLCtrl(), aui.AuiPaneInfo().
-                          Caption("HTML Content").
-                          Float().FloatingPosition(self.GetStartPosition()).
-                          FloatingSize(wx.Size(300, 200)).CloseButton(True).MaximizeButton(True))
-        self._mgr.Update()
+    # def OnCreateHTML(self, event):
+    #     self._mgr.AddPane(self.CreateHTMLCtrl(), aui.AuiPaneInfo().
+    #                       Caption("HTML Content").
+    #                       Float().FloatingPosition(self.GetStartPosition()).
+    #                       FloatingSize(wx.Size(300, 200)).CloseButton(True).MaximizeButton(True))
+    #     self._mgr.Update()
 
 
     def OnCreateText(self, event):
@@ -705,19 +643,21 @@ class PyAUIFrame(wx.Frame):
         tree.AssignImageList(imglist)
 
         items.append(tree.AppendItem(root, "Coupler-1", 0))
-        items.append(tree.AppendItem(root, "Coupler-2", 0))
-        items.append(tree.AppendItem(root, "Coupler-3", 0))
-        items.append(tree.AppendItem(root, "Coupler-4", 0))
-        items.append(tree.AppendItem(root, "Coupler-5", 0))
+        #items.append(tree.AppendItem(root, "Coupler-2", 0))
+        #items.append(tree.AppendItem(root, "Coupler-3", 0))
+        #items.append(tree.AppendItem(root, "Coupler-4", 0))
+        #items.append(tree.AppendItem(root, "Coupler-5", 0))
 
         for ii in range(len(items)):
 
             id = items[ii]
-            tree.AppendItem(id, "Subitem 1", 1)
-            tree.AppendItem(id, "Subitem 2", 1)
-            tree.AppendItem(id, "Subitem 3", 1)
-            tree.AppendItem(id, "Subitem 4", 1)
-            tree.AppendItem(id, "Subitem 5", 1)
+            tree.AppendItem(id, "DI 16 Module", 1)
+            tree.AppendItem(id, "DI 16 Module", 1)
+            tree.AppendItem(id, "DO 16 Module", 1)
+            tree.AppendItem(id, "DO 16 Module",1)
+            tree.AppendItem(id, "DO 16 Module", 1)
+            tree.AppendItem(id, "TC 08 Module", 1)
+            tree.AppendItem(id, "TC 08 Module", 1)
 
         tree.Expand(root)
 
@@ -1162,7 +1102,7 @@ interfaces quickly and easily.</p>
 
 if __name__ == '__main__':
     app = wx.App()
-    frame = PyAUIFrame(None, title="My app")
+    frame = PyAUIFrame(None, title="IO Module Designer")
     frame.Show()
     app.MainLoop()
 
