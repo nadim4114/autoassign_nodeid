@@ -10,6 +10,7 @@ from six import BytesIO
 from wx import PyApp
 
 ID_CreateTree = wx.NewIdRef()
+ID_CreateModuleList = wx.NewIdRef()
 ID_CreateGrid = wx.NewIdRef()
 ID_CreateText = wx.NewIdRef()
 ID_CreateHTML = wx.NewIdRef()
@@ -68,6 +69,16 @@ def GetMondrianIcon():
     icon = wx.Icon()
     icon.CopyFromBitmap(GetMondrianBitmap())
     return icon
+
+
+
+class MyTarget(wx.TextDropTarget): 
+   def __init__(self, object): 
+      wx.TextDropTarget.__init__(self) 
+      self.object = object  
+		
+   def OnDropText(self, x, y, data): 
+      self.object.InsertStringItem(0, data)
 
 
 class PyAUIFrame(wx.Frame):
@@ -198,10 +209,16 @@ class PyAUIFrame(wx.Frame):
         #                   Name("test6").Caption("Client Size Reporter").
         #                   Right().Row(1).CloseButton(True).MaximizeButton(True))
 
-        self._mgr.AddPane(self.CreateSizeReportCtrl(), aui.AuiPaneInfo().
-                          Name("test7").Caption("Action bar").
-                          BestSize(wx.Size(200, 100)).MinSize(wx.Size(200, 100)).
-                          Left().Layer(1).CloseButton(True).MaximizeButton(True))
+#        self._mgr.AddPane(self.CreateSizeReportCtrl(), aui.AuiPaneInfo().
+#                          Name("test7").Caption("Action bar").
+#                          BestSize(wx.Size(200, 100)).MinSize(wx.Size(200, 100)).
+#                          Left().Layer(1).CloseButton(True).MaximizeButton(True))        
+
+        self._mgr.AddPane(self.CreateModuleList(), aui.AuiPaneInfo().
+                          Name("test08").Caption("Module List").
+                          Left().Layer(1).Position(1).CloseButton(True).MaximizeButton(True))
+
+
 
         self._mgr.AddPane(self.CreateTreeCtrl(), aui.AuiPaneInfo().
                           Name("test8").Caption("Tree Pane").
@@ -295,8 +312,9 @@ class PyAUIFrame(wx.Frame):
         self._mgr.GetPane("tb5").Hide()
         self._mgr.GetPane("tbvert").Show()
         self._mgr.GetPane("grid_content").Show()
-        self._mgr.GetPane("test7").Show().Right().Layer(0).Row(0).Position(0)
+        self._mgr.GetPane("test7").Show().Right().Layer(0).Row(0).Position(0) 
         self._mgr.GetPane("test8").Show().Left().Layer(0).Row(0).Position(0)
+        self._mgr.GetPane("test08").Show().Right().Layer(0).Row(0).Position(0)
         self._mgr.GetPane("test10").Show().Bottom().Layer(0).Row(0).Position(0)
         self._mgr.GetPane("html_content").Hide()
 
@@ -320,6 +338,7 @@ class PyAUIFrame(wx.Frame):
         self.Bind(aui.EVT_AUI_PANE_CLOSE, self.OnPaneClose)
 
         self.Bind(wx.EVT_MENU, self.OnCreateTree, id=ID_CreateTree)
+        self.Bind(wx.EVT_MENU, self.OnCreateModule, id=ID_CreateModuleList)
         self.Bind(wx.EVT_MENU, self.OnCreateGrid, id=ID_CreateGrid)
         self.Bind(wx.EVT_MENU, self.OnCreateText, id=ID_CreateText)
         # self.Bind(wx.EVT_MENU, self.OnCreateHTML, id=ID_CreateHTML)
@@ -567,6 +586,13 @@ class PyAUIFrame(wx.Frame):
                           FloatingSize(wx.Size(150, 300)).CloseButton(True).MaximizeButton(True))
         self._mgr.Update()
 
+    def OnCreateModule(self, event):
+        self._mgr.AddPane(self.CreateModuleList(), aui.AuiPaneInfo().
+                          Caption("Module List").
+                          Float().FloatingPosition(self.GetStartPosition()).
+                          FloatingSize(wx.Size(150, 300)).CloseButton(True).MaximizeButton(True))
+        self._mgr.Update()
+
 
     def OnCreateGrid(self, event):
         self._mgr.AddPane(self.CreateGrid(), aui.AuiPaneInfo().
@@ -631,37 +657,86 @@ class PyAUIFrame(wx.Frame):
 
     def CreateTreeCtrl(self):
 
-        tree = wx.TreeCtrl(self, -1, wx.Point(0, 0), wx.Size(160, 250),
+        self.tree = wx.TreeCtrl(self, -1, wx.Point(0, 0), wx.Size(160, 250),
                            wx.TR_DEFAULT_STYLE | wx.NO_BORDER)
 
-        root = tree.AddRoot("PLC")
+        root = self.tree.AddRoot("PLC")
         items = []
+    
 
         imglist = wx.ImageList(16, 16, True, 2)
         imglist.Add(wx.ArtProvider.GetBitmap(wx.ART_HARDDISK, wx.ART_OTHER, wx.Size(20,20)))
         imglist.Add(wx.ArtProvider.GetBitmap(wx.ART_CLOSE, wx.ART_OTHER, wx.Size(20,20)))
-        tree.AssignImageList(imglist)
+        self.tree.AssignImageList(imglist)
 
-        items.append(tree.AppendItem(root, "Coupler-1", 0))
+        items.append(self.tree.AppendItem(root, "Coupler-1", 0))
         #items.append(tree.AppendItem(root, "Coupler-2", 0))
         #items.append(tree.AppendItem(root, "Coupler-3", 0))
         #items.append(tree.AppendItem(root, "Coupler-4", 0))
         #items.append(tree.AppendItem(root, "Coupler-5", 0))
 
-        for ii in range(len(items)):
+#        for ii in range(len(items)):
 
-            id = items[ii]
-            tree.AppendItem(id, "DI 16 Module", 1)
-            tree.AppendItem(id, "DI 16 Module", 1)
-            tree.AppendItem(id, "DO 16 Module", 1)
-            tree.AppendItem(id, "DO 16 Module",1)
-            tree.AppendItem(id, "DO 16 Module", 1)
-            tree.AppendItem(id, "TC 08 Module", 1)
-            tree.AppendItem(id, "TC 08 Module", 1)
+#            id = items[ii]
+#            tree.AppendItem(id, "DI 16 Module", 1)
+#            tree.AppendItem(id, "DI 16 Module", 1)
+#            tree.AppendItem(id, "DO 16 Module", 1)
+#            tree.AppendItem(id, "DO 16 Module",1)
+#            tree.AppendItem(id, "DO 16 Module", 1)
+#            tree.AppendItem(id, "TC 08 Module", 1)
+#            tree.AppendItem(id, "TC 08 Module", 1)
 
-        tree.Expand(root)
+        self.tree.Expand(root)
+        
 
-        return tree
+
+        return self.tree
+    
+    def OnDragInit(self, event): 
+      text = self.ModuleList.GetItemText(event.GetIndex()) 
+      tobj = wx.PyTextDataObject(text) 
+      src = wx.DropSource(self.ModuleList) 
+      src.SetData(tobj) 
+      src.DoDragDrop(True) 
+      #self.lst1.DeleteItem(event.GetIndex())
+
+    def CreateModuleList(self):
+
+        self.ModuleList = wx.TreeCtrl(self, -1, wx.Point(50, 0), wx.Size(160, 250),
+                           wx.TR_DEFAULT_STYLE | wx.NO_BORDER)
+
+        root = self.ModuleList.AddRoot("Available Modules")
+        items = []
+
+        imglist = wx.ImageList(16, 16, True, 2)
+        imglist.Add(wx.ArtProvider.GetBitmap(wx.ART_HARDDISK, wx.ART_OTHER, wx.Size(20,20)))
+        imglist.Add(wx.ArtProvider.GetBitmap(wx.ART_CLOSE, wx.ART_OTHER, wx.Size(20,20)))
+        self.ModuleList.AssignImageList(imglist)
+        
+
+        items.append(self.ModuleList.AppendItem(root, "DI 16 Module", 0))
+        items.append(self.ModuleList.AppendItem(root, "DO 16 Module", 0))
+        items.append(self.ModuleList.AppendItem(root, "TC 08 Module", 0))
+        items.append(self.ModuleList.AppendItem(root, "AI 4 Module", 0))
+        items.append(self.ModuleList.AppendItem(root, "AO 4 Module", 0))
+
+#        for ii in range(len(items)):
+
+#            id = items[ii]
+#            tree.AppendItem(id, "DI 16 Module", 1)
+#            tree.AppendItem(id, "DI 16 Module", 1)
+#            tree.AppendItem(id, "DO 16 Module", 1)
+#            tree.AppendItem(id, "DO 16 Module",1)
+#            tree.AppendItem(id, "DO 16 Module", 1)
+#            tree.AppendItem(id, "TC 08 Module", 1)
+#            tree.AppendItem(id, "TC 08 Module", 1)
+
+        self.ModuleList.Expand(root)
+
+        return self.ModuleList
+
+
+
 
 
     def CreateSizeReportCtrl(self, width=80, height=80):
